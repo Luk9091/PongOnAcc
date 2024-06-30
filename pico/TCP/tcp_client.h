@@ -5,9 +5,12 @@
 
 #include "lwip/pbuf.h"
 #include "lwip/tcp.h"
+#include <hardware/timer.h>
 #include <pico/util/queue.h>
+#include <hardware/gpio.h>
 
 #define DEBUG_printf // printf
+#define BLINK_LED 15
 
 #define BUF_SIZE 200
 #define TEST_ITERATIONS 10

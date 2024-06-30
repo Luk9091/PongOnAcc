@@ -35,10 +35,11 @@ target_link_libraries(${PROJECT_NAME}
     pico_cyw43_arch_lwip_poll
     hardware_gpio
     hardware_i2c
+    hardware_timer
 
     pico_multicore
 )
 
 
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 1)

@@ -42,7 +42,7 @@ class Board():
                     pygame.quit()
                     sys.exit()
             (x, y, z) = self.server.read()
-            self.racket.move(self, pygame.Vector2(x, y))
+            self.racket.move(self, pygame.Vector2(-x, -y))
             # (x, y) = pygame.mouse.get_rel()
             # self.racket.move(self, pygame.Vector2(x, y))
             self.ball.move(self, self.racket, self.judge)

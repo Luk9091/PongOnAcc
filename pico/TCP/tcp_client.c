@@ -70,6 +70,7 @@ static void tcp_client_err(void *arg, err_t err) {
 }
 
 err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
+    // uint irq = save_and_disable_interrupts();
     TCP_CLIENT_T *state = (TCP_CLIENT_T*)arg;
     if (!p) {
         return tcp_result(arg, -1);
@@ -94,7 +95,7 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
             DEBUG_printf("Failed to write data %d\n", err);
             return tcp_result(arg, -1);
     }
-
+    // restore_interrupts(irq);
     return ERR_OK;
 }
 
@@ -153,10 +154,22 @@ static err_t wifi_init(){
     return ERR_OK;
 }
 
+bool blinking(repeating_timer_t *t){
+    // uint irq = save_and_disable_interrupts();
+    gpio_put(BLINK_LED, !gpio_get(BLINK_LED));
+    
+    // restore_interrupts(irq);
+    return true;
+}
+
 void run_tcp_client(void) {
     if(wifi_init() != ERR_OK){
         return;
     }
+
+    gpio_init(BLINK_LED);
+    gpio_set_dir(BLINK_LED, GPIO_OUT);
+    gpio_put(BLINK_LED, 1);
 
     TCP_CLIENT_T *state = tcp_client_init();
     if (!state) {
@@ -169,8 +182,10 @@ void run_tcp_client(void) {
     }
 
     tcp_data_t data;
+    struct repeating_timer timer;
+    add_repeating_timer_ms(500, blinking, NULL, &timer);
 
-    while(1) {
+    while(!state->complete) {
     #if PICO_CYW43_ARCH_POLL
         cyw43_arch_poll();
         cyw43_arch_wait_for_work_until(make_timeout_time_ms(1000));
@@ -192,5 +207,8 @@ void run_tcp_client(void) {
         // sleep_ms(1);
     }
     free(state);
+    cancel_repeating_timer(&timer);
+    gpio_put(BLINK_LED, 0);
+    
     cyw43_arch_deinit();
 }

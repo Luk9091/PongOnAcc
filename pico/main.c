@@ -10,6 +10,12 @@
 #include "i2c.h"
 #include "mpu6050.h"
 
+static const axisf_t offset = (axisf_t){
+    .x= -1.75f,
+    .y= 0.2f,
+    .z= 0.3935f
+};
+
 
 
 int main(){
@@ -28,9 +34,10 @@ int main(){
     tcp_data_t data;
     axisf_t acc;
     while(1){
-        gpio_put(16, !gpio_get(16));
-        
         mpu6050_readAcc(&acc);
+        acc.x -= offset.x;
+        acc.y -= offset.y;
+        acc.z -= offset.z;
         sprintf(data.data, "%.3f %.3f %.3f", acc.x, acc.y, acc.z);
         data.len = strlen(data.data);
         queue_add_blocking(&sender_queue, &data);
