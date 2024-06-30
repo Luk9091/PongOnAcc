@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage{anyfontsize}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{polski}
+\usepackage{tabto}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{setspace}
+
+\usepackage{listings}
+
+
+
+\usepackage{tabularx}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{R}{>{\raggedright\arraybackslash}X}
+\usepackage{wrapfig}
+
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\numberwithin{equation}{section}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = true,
+    urlcolor=blue,
+    linkcolor= black
+}
+
+\usepackage{graphicx}
+\graphicspath{{./Img/}}
+
+\usepackage{csvsimple}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat= newest}
+
+
+\usepackage{titlesec}
+\titlelabel{\thetitle.\quad}
+% \AddToHook{cmd/section/before}{\clearpage}
+
+\usepackage[european, american currents, americanvoltages, RPvoltages, cute inductor]{circuitikz}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\ctikzset{
+    logic ports=ieee,
+    logic ports/scale=0.7,
+}
+
+\title{Dokumentacja projektu\\Gra z sterowaniem za pomocą protokołu TCP}
+\author{Łukasz Przystupa}
+\date{\today}
+
+\usepackage{titling}
+\renewcommand\maketitlehooka{\null\mbox{}\vfill}
+\renewcommand\maketitlehookd{\vfill\null}
+
+\begin{document}
+    \begin{titlepage}
+        \maketitle
+        \thispagestyle{empty}
+        \begin{center}
+            Opiekun projektu: Jacek Kołodziej\\
+            Przedmiot: Komunikacja między układowa
+        \end{center}
+    \end{titlepage}
+
+    \input{Chapters/zalozenia}
+    \input{Chapters/testy}
+    \input{Chapters/zlozenie}
+    
+    
+    \vfill
+    \begin{flushright}
+        Łukasz Przystupa
+    \end{flushright}
+\end{document}

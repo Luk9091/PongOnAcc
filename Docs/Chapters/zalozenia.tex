@@ -1,0 +1,58 @@
+\section{Założenia projektowe}
+    Celem projektu jest demonstracja działania protokołu TCP/IP. 
+    Przetestowanie dwustronnej komunikacji oraz sprawdzenie jak działa komunikacja w czasie rzeczywistym.
+
+    Projekt przedstawia prostą grę typu pong, w której gracz za pomocą wychyleń potencjometru steruje paletką.
+    Sama komunikacja zaś opiera się na prostej zasadzie typu: pytanie odpowiedź.
+
+\subsection{Metoda działania}
+    \begin{figure}[!ht]
+        \centering
+        \begin{circuitikz}
+            \draw
+                (0, 0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm](MPU){MPU6050}
+                (4, 0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm, align=center](CPU){Raspberry\\PICO}
+                (10, 0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm](PC){PC}
+
+                (MPU.east) ++ (0, 0.25) to[short, l = I2C] ++(1.9, 0)
+                (MPU.east) ++ (0,-0.25) to[short] ++(1.9, 0)
+
+                (6, 1.0) arc(60:-60:1)
+                (7, 0.8) arc(60:-60:0.8)
+                (8, 0.6) arc(60:-60:0.6)
+                (7, 1.25) node[]{WiFi}
+                (7,-1.25) node[]{TCP/IP}
+            ;
+        \end{circuitikz}
+        \caption{Uproszczony model działania układu}
+    \end{figure}
+    Płytka Raspberry PI PICO W, jest pośrednikiem pomiędzy akcelerometrem MPU6050 a komputerem z uruchomionym serwerem gry.
+    Mikrokontroler z jednej strony komunikuje się za pośrednictwem I2C z układem akcelerometru i żyroskopu MPU6050.
+    Z drugiej zaś z pomocą bibliotek dostarczonych przez producenta oraz magistrali SPI z układem WiFi CWY43.
+    Za pomocą tego układu nawiązywana jest komunikacja z hostem (komputerem z uruchomionym serwerem gry).
+
+\subsection{Założenia funkcjonalne}
+    Układ mikrokontroler powinien wykonywać dwa równorzędne zadania:
+    \begin{enumerate}
+        \item Odczytywać dane z akcelerometru,
+        \item Monitorować stan TCP i w przypadku odebrania wiadomości odesłać aktualny stan akcelerometru.
+    \end{enumerate}
+
+    \begin{figure}[!ht]
+        \centering
+        \begin{circuitikz}
+            \draw
+                (0, 0) node[draw, circle, align=center](read){Odczytaj dane\\z akcelerometru}
+                (0,-4) node[draw, circle, align=center](wait){Czekaj}
+
+                (8, 0) node[draw, circle, align=center](TCP){Odpowiedz na\\wiadomości po TCP}
+                (8,-4) node[draw, circle, align=center](blink){Mrugaj\\diodą}
+            ;
+
+            \draw[Stealth-, very thick] (read) to[bend left] (wait);
+            \draw[Stealth-, very thick] (wait) to[bend left] (read);
+            
+            \draw[Stealth-, very thick] (blink) to[bend left] (TCP);
+            \draw[Stealth-, very thick] (TCP) to[bend left] (blink);
+        \end{circuitikz}
+    \end{figure}
