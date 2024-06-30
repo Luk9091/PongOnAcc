@@ -28,7 +28,7 @@
         "tcp_client.h": "c",
         "stdlib.h": "c"
     },
-    "cmake.sourceDirectory": "/home/lukasz/Dokumenty/GitHub/Komunikacja/pico",
+    "cmake.sourceDirectory": "/home/lukasz/Dokumenty/GitHub/PongOnAcc/pico",
     "cSpell.words": [
         "ABRT",
         "axisf",

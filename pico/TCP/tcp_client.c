@@ -46,28 +46,6 @@ static err_t tcp_result(void *arg, int status) {
     return tcp_client_close(arg);
 }
 
-// static err_t tcp_client_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
-//     TCP_CLIENT_T *state = (TCP_CLIENT_T*)arg;
-//     DEBUG_printf("tcp_client_sent %u\n", len);
-//     state->sent_len += len;
-
-//     if (state->sent_len >= BUF_SIZE) {
-
-//         state->run_count++;
-//         if (state->run_count >= TEST_ITERATIONS) {
-//             tcp_result(arg, 0);
-//             return ERR_OK;
-//         }
-
-//         // We should receive a new buffer from the server
-//         state->buffer_len = 0;
-//         state->sent_len = 0;
-//         DEBUG_printf("Waiting for buffer from server\n");
-//     }
-
-//     return ERR_OK;
-// }
-
 static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
     TCP_CLIENT_T *state = (TCP_CLIENT_T*)arg;
     if (err != ERR_OK) {
@@ -103,10 +81,6 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     cyw43_arch_lwip_check();
     if (p->tot_len > 0) {
         DEBUG_printf("recv %d err %d\n", p->tot_len, err);
-        // for (struct pbuf *q = p; q != NULL; q = q->next) {
-        //     DUMP_BYTES(q->payload, q->len);
-        // }
-        // Receive the buffer
         const uint16_t buffer_left = BUF_SIZE - state->recv_len;
         state->recv_len += pbuf_copy_partial(p, state->recv + state->recv_len,
                                                p->tot_len > buffer_left ? buffer_left : p->tot_len, 0);
@@ -114,8 +88,8 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     }
     pbuf_free(p);
 
-    // char msg[] = "Hello from Pico!";
     err = tcp_write(tpcb, state->send, state->send_len, TCP_WRITE_FLAG_COPY);
+
     if (err != ERR_OK) {
             DEBUG_printf("Failed to write data %d\n", err);
             return tcp_result(arg, -1);
@@ -135,7 +109,6 @@ static bool tcp_client_open(void *arg) {
 
     tcp_arg(state->tcp_pcb, state);
     tcp_poll(state->tcp_pcb, tcp_client_poll, POLL_TIME_S * 2);
-    // tcp_sent(state->tcp_pcb, tcp_client_sent);
     tcp_recv(state->tcp_pcb, tcp_client_recv);
     tcp_err(state->tcp_pcb, tcp_client_err);
 

@@ -16,6 +16,7 @@ int main(){
     stdio_init_all();
     
     I2C_Init();
+    I2C_scan(I2C_CHANNEL);
     mpu6050_Init();
 
 

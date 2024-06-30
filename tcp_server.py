@@ -37,7 +37,12 @@ class TcpServer:
 
 
 if __name__ == "__main__":
-    server = TcpServer()
+    # TCP_ADDRESS = "192.168.88.252"
+    TCP_ADDRESS = "10.42.0.1"
+    TCP_PORT = 4242
+
+
+    server = TcpServer(TCP_ADDRESS, TCP_PORT)
     server.start()
     
     try:

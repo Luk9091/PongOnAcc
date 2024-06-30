@@ -4,6 +4,9 @@ import numpy as np
 from time import sleep
 
 from tcp_server import TcpServer
+TCP_ADDRESS = "10.42.0.1"
+# TCP_ADDRESS = "192.168.88.252"
+TCP_PORT = 4242
 
 class Drawable():
     def __init__(self, width, height, x, y, color):
@@ -29,7 +32,7 @@ class Board():
         self.racket = Racket(300, 40, width/2, height*0.9)
         self.judge = Judge()
 
-        self.server = TcpServer()
+        self.server = TcpServer(TCP_ADDRESS, TCP_PORT)
 
     def run(self):
         while True:
